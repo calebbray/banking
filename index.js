@@ -23,6 +23,7 @@ app.use(bodyParser.json());
 app.use('/api/customers', customers);
 
 app.listen(config.PORT, () => {
+  mongoose.set('useFindAndModify', false);
   mongoose
     .connect(
       config.MONGODB_URI,
