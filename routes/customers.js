@@ -5,15 +5,79 @@ const config = require('../config');
 const Customer = require('../models/Customer');
 
 router.get('/test', (req, res) => res.json({ msg: 'Customers Works' }));
+router.get('/myamount', (req, res) => {
+  Customer.find({})
+    .then(customers => {
+      let payload = {
+        data: {}
+      };
+      payload.data.eligible = [];
+      customers.forEach(
+        customer =>
+          customer.balance >= req.query.amount
+            ? payload.data.eligible.push({
+                name: customer.name,
+                balance: customer.balance
+              })
+            : false
+      );
+      payload.data.number = payload.data.eligible.length;
+      res.send(payload);
+    })
+    .catch(err => res.send(err.message));
+
+  console.log('hello world');
+});
+
+router.post('/myamount', (req, res) => {
+  const { amount } = req.body;
+  if (!req.is('application/json')) {
+    return res.send({ error: 'Exptecting application/json data' });
+  } else {
+    if (!amount) {
+      return res.send({ error: "Expecting 'amount' in request body" });
+    } else {
+      Customer.find({})
+        .then(customers => {
+          let payload = {
+            data: {}
+          };
+          payload.data.eligible = [];
+          customers.forEach(
+            customer =>
+              customer.balance >= amount
+                ? payload.data.eligible.push({
+                    name: customer.name,
+                    balance: customer.balance
+                  })
+                : false
+          );
+          payload.data.number = payload.data.eligible.length;
+          res.send(payload);
+        })
+        .catch(err => res.send(err.message));
+    }
+  }
+});
 
 router.get('/', async (req, res) => {
   try {
     const customers = await Customer.find({});
-    res.send(customers);
+    const payload = {
+      data: {}
+    };
+    payload.data.customers = customers;
+    res.send(payload);
     console.log('200 Retrieved all customers');
   } catch (err) {
     res.send(err.message);
   }
+});
+
+router.get('/:id', (req, res) => {
+  Customer.findOne({ _id: req.params.id })
+    .then(customer => res.status(200).send(customer))
+    .catch(error => res.status(404).send({ error: error.message }));
 });
 
 router.post('/', async (req, res) => {
@@ -63,6 +127,18 @@ router.delete('/:id', async (req, res) => {
   } catch (err) {
     res.status(404).send({ notFoundError: err.message });
   }
+});
+
+// Advanced API Calls
+router.get('/none', (req, res) => {
+  // try {
+  //   const customers = await Customer.find({});
+  //   res.send(customers);
+  // } catch (err) {
+  //   res.status(404).send({ err });
+  // }
+  res.send('hello');
+  console.log('hello world');
 });
 
 module.exports = router;
