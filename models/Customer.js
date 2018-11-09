@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
 const timestamp = require('mongoose-timestamp');
+const Schema = mongoose.Schema;
 
 const CustomerSchema = new mongoose.Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+
   name: {
     type: String,
     required: true,
