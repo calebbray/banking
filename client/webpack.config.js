@@ -27,8 +27,16 @@ module.exports = {
   },
   plugins: [
     new HtmlWepackPlugin({
-      template: './src/index.html',
+      template: './templates/index.html',
       filename: './index.html'
     })
-  ]
+  ],
+  devServer: {
+    contentBase: './public',
+    hot: true,
+    proxy: {
+      '/api': 'http://localhost:5000'
+    }
+  },
+  devtool: devMode ? 'inline-source-map' : 'source-map'
 };

@@ -11,14 +11,13 @@ router.get('/myamount', (req, res) => {
         data: {}
       };
       payload.data.eligible = [];
-      customers.forEach(
-        customer =>
-          customer.balance >= req.query.amount
-            ? payload.data.eligible.push({
-                name: customer.name,
-                balance: customer.balance
-              })
-            : false
+      customers.forEach(customer =>
+        customer.balance >= req.query.amount
+          ? payload.data.eligible.push({
+              name: customer.name,
+              balance: customer.balance
+            })
+          : false
       );
       payload.data.number = payload.data.eligible.length;
       res.send(payload);
@@ -42,14 +41,13 @@ router.post('/myamount', (req, res) => {
             data: {}
           };
           payload.data.eligible = [];
-          customers.forEach(
-            customer =>
-              customer.balance >= amount
-                ? payload.data.eligible.push({
-                    name: customer.name,
-                    balance: customer.balance
-                  })
-                : false
+          customers.forEach(customer =>
+            customer.balance >= amount
+              ? payload.data.eligible.push({
+                  name: customer.name,
+                  balance: customer.balance
+                })
+              : false
           );
           payload.data.number = payload.data.eligible.length;
           res.send(payload);
