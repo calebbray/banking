@@ -9,7 +9,7 @@ const validators = {};
 validators.checkNewUserInputs = (username, email, password, verify) => {
   const errors = {};
   username =
-    typeof username == 'string' && username.trim().length > 6
+    typeof username == 'string' && username.trim().length >= 6
       ? username.trim()
       : (errors.username = 'Username should be greater than 6 characters long');
 
@@ -21,7 +21,7 @@ validators.checkNewUserInputs = (username, email, password, verify) => {
       : (errors.email = 'Please enter a valid email');
 
   password =
-    typeof password == 'string' && password.trim().length > 7
+    typeof password == 'string' && password.trim().length >= 7
       ? password.trim()
       : (errors.password = 'Password should be at least 7 characters long');
 

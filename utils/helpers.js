@@ -16,4 +16,27 @@ helpers.hashPassword = string => {
   }
 };
 
+helpers.generateToken = () => {
+  const tokenLength = 50;
+  const hashString = 'abcdefghijklmnopqrstuvwxyz1234567890';
+  const hashArray = hashString.split('');
+  let token = '';
+  for (var i = 0; i <= tokenLength; i++) {
+    let temp = Math.floor(Math.random() * hashArray.length);
+    token += hashArray[temp];
+  }
+  return token;
+};
+
+helpers.comparePassword = (givenPassword, foundPassword) => {
+  return new Promise((resolve, reject) => {
+    compare = helpers.hashPassword(givenPassword);
+    if (compare === foundPassword) {
+      resolve();
+    } else {
+      reject(new Error({ message: 'No user found with given credentials' }));
+    }
+  });
+};
+
 module.exports = helpers;

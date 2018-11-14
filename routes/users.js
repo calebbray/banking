@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const config = require('../config');
 const helpers = require('../utils/helpers');
 const validators = require('../utils/validators');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const keys = require('../config');
 
 const User = require('../models/User');
 
@@ -22,25 +24,29 @@ router.get('/all', async (req, res) => {
   }
 });
 
-router.get('/:id', (req, res) => {
-  User.findById(req.params.id).then(user => {
-    if (user) {
-      const payload = {
-        data: {
-          user: {
-            username: user.username,
-            email: user.email,
-            userSince: JSON.stringify(user.createdAt)
-              .split('T')[0]
-              .replace('"', '')
+router.get(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    User.findById(req.params.id).then(user => {
+      if (user) {
+        const payload = {
+          data: {
+            user: {
+              username: user.username,
+              email: user.email,
+              userSince: JSON.stringify(user.createdAt)
+                .split('T')[0]
+                .replace('"', '')
+            }
           }
-        }
-      };
+        };
 
-      res.status(200).send(payload);
-    }
-  });
-});
+        res.status(200).send(payload);
+      }
+    });
+  }
+);
 
 router.post('/newuser', (req, res) => {
   if (!req.is('application/json')) {
@@ -125,6 +131,43 @@ router.delete('/:id', async (req, res) => {
     res.send({ message: 'Deleted User' });
   } catch (err) {
     res.status(404).send(err);
+  }
+});
+
+// Additional routes
+router.post('/login', (req, res) => {
+  const errors = {};
+
+  if (!req.is('application/json')) {
+    return res.send({ error: 'expecting application/json' });
+  } else {
+    const { username, password } = req.body;
+    User.findOne({ username })
+      .then(user => {
+        if (user) {
+          // If there is a user hash the given password to find a match
+          const hashedPass = helpers.hashPassword(password);
+          if (hashedPass === user.password) {
+            const payload = { id: user.id, name: username };
+
+            jwt.sign(
+              payload,
+              keys.SECRET_OR_KEY,
+              { expiresIn: 1800 },
+              (err, token) => {
+                res.send({ success: true, token: 'Bearer ' + token });
+              }
+            );
+          } else {
+            errors.login = 'Invalid username or password';
+            res.status(400).send({ errors });
+          }
+        } else {
+          errors.login = 'Invalid username or password';
+          res.status(400).send({ errors });
+        }
+      })
+      .catch(err => res.send(err));
   }
 });
 

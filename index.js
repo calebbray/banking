@@ -3,6 +3,7 @@ const path = require('path');
 const config = require('./config');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 
 const app = express();
 
@@ -23,6 +24,9 @@ app.use(bodyParser.json());
 
 app.use('/api/customers', customers);
 app.use('/api/users', users);
+
+app.use(passport.initialize());
+require('./config/passport')(passport);
 
 app.listen(config.PORT, () => {
   mongoose.set('useFindAndModify', false);
