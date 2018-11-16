@@ -1,4 +1,9 @@
 import axios from 'axios';
+import {
+  INCREMENT_COUNT,
+  INCREASE_INCREMENT,
+  DECREASE_INCREMENT
+} from './types';
 
 export const testCustomers = () => {
   axios
@@ -14,4 +19,22 @@ export const testCustomers = () => {
       console.log(res.data);
     })
     .catch(err => console.log(err));
+};
+
+export const count = () => dispatch => {
+  dispatch({
+    type: INCREMENT_COUNT
+  });
+};
+
+export const increment = () => dispatch => {
+  dispatch({
+    type: INCREASE_INCREMENT
+  });
+};
+
+export const decrement = () => dispatch => {
+  dispatch({
+    type: DECREASE_INCREMENT
+  });
 };

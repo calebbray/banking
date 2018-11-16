@@ -39,4 +39,10 @@ helpers.comparePassword = (givenPassword, foundPassword) => {
   });
 };
 
+helpers.isEmpty = toCheck =>
+  toCheck === undefined ||
+  toCheck === null ||
+  (typeof toCheck === 'object' && Object.keys(toCheck).length === 0) ||
+  (typeof toCheck === 'string' && Object.keys(toCheck).length === 0);
+
 module.exports = helpers;
