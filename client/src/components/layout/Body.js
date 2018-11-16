@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-// import { testCustomers } from '../../actions/test';
+import { testCustomers } from '../../actions/test';
 import { connect } from 'react-redux';
 import { count, increment, decrement } from '../../actions/test';
+import { Link } from 'react-router-dom';
 
 class Body extends Component {
   onClick = e => {
     this.props.count();
-    // testCustomers();
-    console.log(this.props.thecount.count);
+    testCustomers();
     e.preventDefault();
   };
 
@@ -24,6 +24,7 @@ class Body extends Component {
   render() {
     return (
       <div>
+        <Link to="/body">Click Me</Link>
         <h1>Count: {this.props.thecount.count}</h1>
         <h2>Increment: {this.props.thecount.increment}</h2>
         <button onClick={this.onClick}>Click Me!</button>
