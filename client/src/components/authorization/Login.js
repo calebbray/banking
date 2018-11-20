@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { login } from '../../actions/authorization';
 
-const Login = () => {
+class Login extends Component {
   state = {
-    email: '',
+    username: '',
     password: ''
   };
 
@@ -14,30 +14,35 @@ const Login = () => {
   };
 
   onSubmit = e => {
-    this.props.login();
-    console.log(clicked);
+    e.preventDefault();
+    const { username, password } = this.state;
+    const credentials = { username, password };
+    this.props.login(credentials);
+    console.log('clicked');
   };
 
-  return (
-    <div>
-      <form onSubmit={this.onSubmit}>
-        <input
-          type="text"
-          name="email"
-          value={this.state.email}
-          onChange={this.onChange}
-        />
-        <input
-          type="password"
-          name="password"
-          value={this.state.password}
-          onChange={this.onChange}
-        />
-        <input type="submit">Login</input>
-      </form>
-    </div>
-  );
-};
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.onSubmit}>
+          <input
+            type="text"
+            name="username"
+            value={this.state.username}
+            onChange={this.onChange}
+          />
+          <input
+            type="password"
+            name="password"
+            value={this.state.password}
+            onChange={this.onChange}
+          />
+          <input type="submit" value="login" />
+        </form>
+      </div>
+    );
+  }
+}
 
 const mapStateToProps = state => ({
   auth: state.authenication
